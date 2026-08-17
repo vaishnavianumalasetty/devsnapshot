@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&family=Space+Grotesk:wght@600;700&display=swap" rel="stylesheet">
+  <title>Manage Repos — {{ username }}</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: 'Poppins', sans-serif;
+      background: #f5f5fa;
+      color: #1a1a2e;
+    }
+    .brand-bar {
+      background: white;
+      border-bottom: 1px solid #e6e6ef;
+      padding: 16px 20px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .brand-bar .logo-mark {
+      width: 34px; height: 34px;
+      border-radius: 9px;
+      background: #6c5ce7;
+      display: flex; align-items: center; justify-content: center;
+      font-family: 'Space Grotesk', sans-serif;
+      font-weight: 700;
+      font-size: 0.85rem;
+      color: white;
+    }
+    .brand-bar span {
+      font-family: 'Space Grotesk', sans-serif;
+      font-weight: 700;
+      font-size: 1.05rem;
+    }
+    .page-body { padding: 36px 20px; }
+    .wrap { max-width: 700px; margin: 0 auto; }
+    .topbar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 20px;
+    }
+    .topbar h1 { font-family: 'Space Grotesk', sans-serif; font-size: 1.4rem; }
+    .topbar a {
+      background: #1a1a2e;
+      color: white;
+      text-decoration: none;
+      padding: 9px 16px;
+      border-radius: 8px;
+      font-size: 0.85rem;
+      font-weight: 600;
+    }
+    .hint {
+      color: #8a8aa0;
+      font-size: 0.85rem;
+      margin-bottom: 20px;
+    }
+    .repo-row {
+      background: white;
+      border: 1px solid #e6e6ef;
+      border-radius: 10px;
+      padding: 16px 18px;
+      margin-bottom: 10px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 12px;
+    }
+    .repo-row.excluded {
+      opacity: 0.5;
+    }
+    .repo-info h3 { font-size: 0.95rem; margin-bottom: 3px; }
+    .repo-info p { font-size: 0.8rem; color: #8a8aa0; }
+    .toggle-form { flex-shrink: 0; }
+    .toggle-btn {
+      border: none;
+      padding: 8px 16px;
+      border-radius: 20px;
+      font-family: inherit;
+      font-size: 0.8rem;
+      font-weight: 600;
+      cursor: pointer;
+    }
+    .toggle-btn.included { background: #e6f9f0; color: #00b894; }
+    .toggle-btn.excluded { background: #f5f5fa; color: #a3a3b8; }
+  </style>
+</head>
+<body>
+  <div class="brand-bar">
+    <div class="logo-mark">DS</div>
+    <span>DevSnapshot</span>
+  </div>
+  <div class="page-body">
+    <div class="wrap">
+      <div class="topbar">
+        <h1>Manage Repos</h1>
+        <a href="/">← Back to dashboard</a>
+      </div>
+      <p class="hint">Toggle off any repos you don't want included in your README, portfolio, or resume.</p>
+
+      {% for repo in repos %}
+      <div class="repo-row {% if not repo.included %}excluded{% endif %}">
+        <div class="repo-info">
+          <h3>{{ repo.name }}</h3>
+          <p>{{ repo.description or "No description" }} · {{ repo.language or "N/A" }}</p>
+        </div>
+        <form class="toggle-form" method="post" action="/manage-repos/toggle">
+          <input type="hidden" name="username" value="{{ username }}">
+          <input type="hidden" name="repo_name" value="{{ repo.name }}">
+          <button type="submit" class="toggle-btn {% if repo.included %}included{% else %}excluded{% endif %}">
+            {% if repo.included %}✓ Included{% else %}Excluded{% endif %}
+          </button>
+        </form>
+      </div>
+      {% endfor %}
+    </div>
+  </div>
+</body>
+</html>

@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&family=Space+Grotesk:wght@600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <title>{{ username }} — README</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: 'Poppins', sans-serif;
+      background: #f5f5fa;
+      color: #1a1a2e;
+      padding: 40px 20px;
+    }
+    .wrap {
+      max-width: 760px;
+      margin: 0 auto;
+    }
+    .topbar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 18px;
+      flex-wrap: wrap;
+      gap: 10px;
+    }
+    .topbar-left {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .back-link {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      color: #6c5ce7;
+      text-decoration: none;
+      font-size: 0.85rem;
+      font-weight: 600;
+    }
+    .topbar h1 {
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: 1.3rem;
+    }
+    .btn {
+      background: #1a1a2e;
+      color: white;
+      border: none;
+      padding: 10px 16px;
+      border-radius: 8px;
+      font-family: inherit;
+      font-size: 0.85rem;
+      font-weight: 600;
+      cursor: pointer;
+    }
+    .btn:hover { background: #12121f; }
+    .panel {
+      background: white;
+      border: 1px solid #e6e6ef;
+      border-radius: 12px;
+      padding: 30px 34px;
+    }
+    .panel h1 { font-family: 'Space Grotesk', sans-serif; font-size: 1.8rem; margin-bottom: 14px; }
+    .panel h2 { font-family: 'Space Grotesk', sans-serif; font-size: 1.2rem; margin: 22px 0 12px; color: #6c5ce7; }
+    .panel h3 { font-size: 1.02rem; margin: 16px 0 4px; }
+    .panel p { line-height: 1.6; color: #444; margin-bottom: 6px; font-size: 0.92rem; }
+    .panel hr { border: none; border-top: 1px solid #eee; margin: 20px 0; }
+    .panel em { color: #8a8aa0; }
+    .raw-toggle {
+      margin-top: 18px;
+      text-align: center;
+    }
+    .raw-toggle a { color: #8a8aa0; font-size: 0.8rem; text-decoration: underline; cursor: pointer; }
+    #raw-box {
+      display: none;
+      margin-top: 14px;
+      background: #0f0f23;
+      color: #c9c3ff;
+      border-radius: 10px;
+      padding: 18px;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.8rem;
+      white-space: pre-wrap;
+      word-break: break-word;
+    }
+    #raw-box.visible { display: block; }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <div class="topbar">
+      <div class="topbar-left">
+        <a href="/" class="back-link">← Dashboard</a>
+        <h1>README preview</h1>
+      </div>
+      <button class="btn" onclick="copyRaw()">📋 Copy Markdown</button>
+    </div>
+    <div class="panel" id="rendered"></div>
+    <div class="raw-toggle"><a onclick="toggleRaw()">View raw markdown</a></div>
+    <div id="raw-box"></div>
+  </div>
+
+  <script>
+    const rawMarkdown = {{ readme_content | tojson }};
+
+    function renderMarkdown(md) {
+      let html = md
+        .replace(/^### (.*$)/gim, '<h3>$1</h3>')
+        .replace(/^## (.*$)/gim, '<h2>$1</h2>')
+        .replace(/^# (.*$)/gim, '<h1>$1</h1>')
+        .replace(/\*\*(.*?)\*\*/gim, '<strong>$1</strong>')
+        .replace(/^---$/gim, '<hr>')
+        .replace(/^\*(.*?)\*$/gim, '<em>$1</em>')
+        .split('\n\n').map(block => {
+          if (block.startsWith('<')) return block;
+          return '<p>' + block.replace(/\n/g, '<br>') + '</p>';
+        }).join('');
+      return html;
+    }
+
+    document.getElementById('rendered').innerHTML = renderMarkdown(rawMarkdown);
+    document.getElementById('raw-box').textContent = rawMarkdown;
+
+    function toggleRaw() {
+      document.getElementById('raw-box').classList.toggle('visible');
+    }
+    function copyRaw() {
+      navigator.clipboard.writeText(rawMarkdown);
+      alert('Markdown copied to clipboard!');
+    }
+  </script>
+</body>
+</html>

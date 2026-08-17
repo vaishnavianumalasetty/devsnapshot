@@ -108,7 +108,7 @@ async def logout(request: Request):
 
 @router.get("/login")
 async def login(request: Request):
-    redirect_uri = "http://localhost:8000/auth/callback"
+    redirect_uri = "https://devsnapshot.onrender.com/auth/callback"
     return await oauth.github.authorize_redirect(request, redirect_uri)
 
 
